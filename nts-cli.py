@@ -1,6 +1,7 @@
 import click
 import requests
 from datetime import datetime
+import html
 import pytz
 from rich.console import Console
 from rich.table import Table
@@ -34,7 +35,7 @@ def create_show_panel(show, channel_num):
     show_info.append(f"CHANNEL {channel_num}\n", style="bold white on black")
     
     # Show title
-    title = show['broadcast_title']
+    title = html.unescape(show['broadcast_title'])
     if "(R)" in title:
         show_info.append(f"{title}\n", style="bold magenta")
     else:
@@ -76,7 +77,7 @@ def create_upcoming_table(channel):
         next_show = channel.get(f'next{i}')
         if next_show:
             time_str = f"{format_time(next_show['start_timestamp'])} - {format_time(next_show['end_timestamp'])}"
-            title = next_show['broadcast_title']
+            title = html.unescape(next_show['broadcast_title'])
             style = "magenta" if "(R)" in title else "white"
             table.add_row(time_str, Text(title, style=style))
     
@@ -134,7 +135,7 @@ def schedule():
             current = channel['now']
             table.add_row(
                 f"{format_time(current['start_timestamp'])} - {format_time(current['end_timestamp'])}",
-                Text(current['broadcast_title'], style="bold blue"),
+                Text(html.unescape(current['broadcast_title']), style="bold blue"),
                 "LIVE"
             )
             
@@ -142,7 +143,7 @@ def schedule():
             for i in range(1, 18):  # NTS usually provides next 17 shows
                 next_show = channel.get(f'next{i}')
                 if next_show:
-                    title = next_show['broadcast_title']
+                    title = html.unescape(next_show['broadcast_title'])
                     show_type = "REPLAY" if "(R)" in title else "LIVE"
                     table.add_row(
                         f"{format_time(next_show['start_timestamp'])} - {format_time(next_show['end_timestamp'])}",
