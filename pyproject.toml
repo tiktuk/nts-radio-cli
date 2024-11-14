@@ -9,4 +9,5 @@ dependencies = [
     "pytz>=2024.2",
     "requests>=2.32.3",
     "rich>=13.9.4",
+    "rich-pixels>=1.1.1",
 ]
