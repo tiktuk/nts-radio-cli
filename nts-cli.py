@@ -1,8 +1,8 @@
 import io
 import click
 import requests
-from datetime import datetime
 import html
+from datetime import datetime
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
