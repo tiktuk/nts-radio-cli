@@ -122,16 +122,21 @@ def now(art):
             data = get_nts_data()
 
         layout = Layout()
-        layout.split_column(Layout(name="channel1"), Layout(name="channel2"))
+        layout.split_row(Layout(name="channel1"), Layout(name="channel2"))
 
         for idx, channel in enumerate(data['results']):
             channel_layout = Layout()
-            show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art)
-            channel_layout.split_row(
-                Layout(show_panel),
-                Layout(art_panel) if art_panel else Layout(),
-                Layout(create_upcoming_table(channel))
+            channel_layout.split_column(
+                Layout(name="art"),
+                Layout(name="show_info"),
+                Layout(name="upcoming")
             )
+
+            show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art)
+            channel_layout["art"].update(art_panel if art_panel else Layout())
+            channel_layout["show_info"].update(show_panel)
+            channel_layout["upcoming"].update(create_upcoming_table(channel))
+
             layout[f"channel{idx + 1}"].update(channel_layout)
 
         console.print(layout)
