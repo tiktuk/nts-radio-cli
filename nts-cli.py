@@ -51,26 +51,6 @@ def create_show_panel(show, channel_num, show_art=False):
     time_str = f"{format_time(show['start_timestamp'])} - {format_time(show['end_timestamp'])}\n"
     show_info.append(time_str, style="yellow")
 
-    # Add art if requested and available
-    if show_art and details.get('media', {}).get('background_small'):
-        try:
-            # Get the url
-            url = details['media']['background_small']
-
-            r = requests.get(url, stream=True)
-            aux_im = Image.open(io.BytesIO(r.content))
-
-            # Create pixels from image
-            pixels = Pixels.from_image(aux_im, resize=(50, 50))
-            show_info.append("\n")
-            console = Console()
-            console.print(pixels)
-            show_info.append("\n")
-        except Exception as e:
-            show_info.append(
-                f"\nError loading show art: {str(e)}\n", style="red"
-            )
-
     # Description
     if details.get('description'):
         show_info.append(f"\n{details['description']}\n", style="white")
@@ -87,9 +67,28 @@ def create_show_panel(show, channel_num, show_art=False):
             f"\nLocation: {details['location_long']}", style="bright_black"
         )
 
-    return Panel(
+    show_panel = Panel(
         show_info, title="NOW PLAYING", border_style="blue", box=box.ROUNDED
     )
+
+    art_panel = None
+    if show_art and details.get('media', {}).get('background_small'):
+        try:
+            # Get the url
+            url = details['media']['background_small']
+
+            r = requests.get(url, stream=True)
+            aux_im = Image.open(io.BytesIO(r.content))
+
+            # Create pixels from image
+            pixels = Pixels.from_image(aux_im, resize=(50, 50))
+            art_panel = Panel(pixels, title="SHOW ART", border_style="blue", box=box.ROUNDED)
+        except Exception as e:
+            art_panel = Panel(
+                f"Error loading show art: {str(e)}", title="SHOW ART", border_style="red", box=box.ROUNDED
+            )
+
+    return show_panel, art_panel
 
 
 def create_upcoming_table(channel):
@@ -127,10 +126,11 @@ def now(art):
 
         for idx, channel in enumerate(data['results']):
             channel_layout = Layout()
+            show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art)
             channel_layout.split_row(
-                Layout(
-                    create_show_panel(channel['now'], idx + 1, show_art=art)
-                ), Layout(create_upcoming_table(channel))
+                Layout(show_panel),
+                Layout(art_panel) if art_panel else Layout(),
+                Layout(create_upcoming_table(channel))
             )
             layout[f"channel{idx + 1}"].update(channel_layout)
 
