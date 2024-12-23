@@ -14,6 +14,17 @@ Or if using uv:
 uv pip install nts-radio-cli
 ```
 
+For local development with uv:
+```bash
+# Install in editable mode
+uv pip install -e .
+
+# Run the CLI
+uv run nts-radio now
+# or
+uv run nts-radio schedule
+```
+
 ## Usage
 
 Once installed from PyPI, you can use these commands:
