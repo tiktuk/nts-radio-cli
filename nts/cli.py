@@ -96,7 +96,7 @@ def create_show_panel(show, channel_num, show_art=False):
 def create_upcoming_table(channel):
     """Create a table of upcoming shows"""
     table = Table(box=box.SIMPLE)
-    table.add_column("Time", style="yellow", width=15)
+    table.add_column("Time", style="yellow")
     table.add_column("Show", style="white")
 
     # Add next 5 shows
