@@ -128,14 +128,21 @@ def now(art):
 
         for idx, channel in enumerate(data['results']):
             channel_layout = Layout()
-            channel_layout.split_column(
-                Layout(name="art"),
-                Layout(name="show_info"),
-                Layout(name="upcoming")
-            )
+            if art:
+                channel_layout.split_column(
+                    Layout(name="art"),
+                    Layout(name="show_info"),
+                    Layout(name="upcoming")
+                )
+            else:
+                channel_layout.split_column(
+                    Layout(name="show_info"),
+                    Layout(name="upcoming")
+                )
 
             show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art)
-            channel_layout["art"].update(art_panel if art_panel else Layout())
+            if art:
+                channel_layout["art"].update(art_panel if art_panel else Layout())
             channel_layout["show_info"].update(show_panel)
             channel_layout["upcoming"].update(create_upcoming_table(channel))
 
