@@ -40,6 +40,18 @@ To include show artwork (displayed in ASCII art):
 nts-radio now --art
 ```
 
+You can customize the size of the artwork using the --art-width and --art-height options:
+```bash
+# Default size (80x40)
+nts-radio now --art
+
+# Custom size (100x50)
+nts-radio now --art --art-width 100 --art-height 50
+
+# Smaller size (40x20)
+nts-radio now --art --art-width 40 --art-height 20
+```
+
 ### View Full Schedule
 
 ```bash
@@ -51,7 +63,7 @@ nts-radio schedule
 - Display currently playing shows on both NTS channels
 - Show upcoming broadcasts
 - View full schedule for both channels
-- Optional ASCII art display of show artwork
+- Optional ASCII art display of show artwork with customizable dimensions
 
 ## Requirements
 
