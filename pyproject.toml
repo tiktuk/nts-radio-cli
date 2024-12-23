@@ -1,13 +1,21 @@
 [project]
 name = "nts"
 version = "0.1.0"
-description = "Add your description here"
+description = "CLI tool to check what's playing on NTS Radio"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.8"
 dependencies = [
     "click>=8.1.7",
     "pytz>=2024.2",
     "requests>=2.32.3",
     "rich>=13.9.4",
     "rich-pixels>=1.1.1",
+    "pillow>=10.0.0",
 ]
+
+[project.scripts]
+nts = "nts.cli:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
