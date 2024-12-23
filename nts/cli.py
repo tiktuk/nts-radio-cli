@@ -34,7 +34,7 @@ def get_nts_data():
     return response.json()
 
 
-def create_show_panel(show, channel_num, show_art=False):
+def create_show_panel(show, channel_num, show_art=False, art_width=80, art_height=40):
     """Create a rich panel for the current show"""
     details = show.get('embeds', {}).get('details', {})
 
@@ -82,8 +82,8 @@ def create_show_panel(show, channel_num, show_art=False):
             r = requests.get(url, stream=True)
             aux_im = Image.open(io.BytesIO(r.content))
 
-            # Create pixels from image with larger size to fill the frame better
-            pixels = Pixels.from_image(aux_im, resize=(80, 40))
+            # Create pixels from image using specified dimensions
+            pixels = Pixels.from_image(aux_im, resize=(art_width, art_height))
             art_panel = Panel(pixels, title="SHOW ART", border_style="blue", box=box.ROUNDED)
         except Exception as e:
             art_panel = Panel(
@@ -115,7 +115,13 @@ def create_upcoming_table(channel):
 @click.option(
     '--art', is_flag=True, help='Show ASCII art for the current shows'
 )
-def now(art):
+@click.option(
+    '--art-width', default=80, type=int, help='Width of the show art in characters (default: 80)'
+)
+@click.option(
+    '--art-height', default=40, type=int, help='Height of the show art in characters (default: 40)'
+)
+def now(art, art_width, art_height):
     """Display currently playing shows on NTS"""
     console = Console()
 
@@ -140,7 +146,7 @@ def now(art):
                     Layout(name="upcoming")
                 )
 
-            show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art)
+            show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art, art_width=art_width, art_height=art_height)
             if art:
                 channel_layout["art"].update(art_panel if art_panel else Layout())
             channel_layout["show_info"].update(show_panel)
