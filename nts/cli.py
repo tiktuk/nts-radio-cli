@@ -82,8 +82,8 @@ def create_show_panel(show, channel_num, show_art=False):
             r = requests.get(url, stream=True)
             aux_im = Image.open(io.BytesIO(r.content))
 
-            # Create pixels from image
-            pixels = Pixels.from_image(aux_im, resize=(50, 50))
+            # Create pixels from image with larger size to fill the frame better
+            pixels = Pixels.from_image(aux_im, resize=(80, 40))
             art_panel = Panel(pixels, title="SHOW ART", border_style="blue", box=box.ROUNDED)
         except Exception as e:
             art_panel = Panel(
