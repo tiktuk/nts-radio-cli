@@ -4,34 +4,35 @@ A command-line interface to check what's playing on NTS Radio.
 
 ## Installation
 
+From PyPI:
 ```bash
-pip install nts
+pip install nts-radio-cli
 ```
 
-Or if using UV:
+Or if using uv:
 ```bash
-uv pip install nts
+uv pip install nts-radio-cli
 ```
 
 ## Usage
 
-The CLI provides two main commands:
+Once installed from PyPI, you can use these commands:
 
 ### Check Currently Playing Shows
 
 ```bash
-nts now
+nts-radio now
 ```
 
 To include show artwork (displayed in ASCII art):
 ```bash
-nts now --art
+nts-radio now --art
 ```
 
 ### View Full Schedule
 
 ```bash
-nts schedule
+nts-radio schedule
 ```
 
 ## Features
@@ -40,7 +41,6 @@ nts schedule
 - Show upcoming broadcasts
 - View full schedule for both channels
 - Optional ASCII art display of show artwork
-- Real-time conversion of show times to your local timezone
 
 ## Requirements
 
