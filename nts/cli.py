@@ -190,15 +190,13 @@ def schedule():
             table = Table(title=f"Channel {idx + 1} Schedule", box=box.ROUNDED)
             table.add_column("Time", style="yellow")
             table.add_column("Show", style="white")
-            table.add_column("Live", style="white")
 
             # Add current show
             current = channel['now']
             title = format_show_title(current['broadcast_title'])
             table.add_row(
                 format_time_range(current['start_timestamp'], current['end_timestamp']),
-                Text(title, style="bold blue"),
-                "" if "(R)" in title else LIVE_INDICATOR
+                Text(title, style="bold blue")
             )
 
             # Add upcoming shows
@@ -208,8 +206,7 @@ def schedule():
                     title = format_show_title(next_show['broadcast_title'])
                     table.add_row(
                         format_time_range(next_show['start_timestamp'], next_show['end_timestamp']),
-                        title,
-                        "" if "(R)" in title else LIVE_INDICATOR
+                        title
                     )
 
             console.print(table)
