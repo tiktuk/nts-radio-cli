@@ -182,7 +182,7 @@ def schedule():
                 Text(
                     html.unescape(current['broadcast_title']),
                     style="bold blue"
-                ), "LIVE"
+                ), "LIVE" if "(R)" not in current['broadcast_title'] else ""
             )
 
             # Add upcoming shows
@@ -190,7 +190,8 @@ def schedule():
                 next_show = channel.get(f'next{i}')
                 if next_show:
                     title = html.unescape(next_show['broadcast_title'])
-                    show_type = "REPLAY" if "(R)" in title else "LIVE"
+                    is_replay = "(R)" in title
+                    show_type = "LIVE" if not is_replay else ""
                     table.add_row(
                         f"{format_time(next_show['start_timestamp'])} - {format_time(next_show['end_timestamp'])}",
                         title, show_type
