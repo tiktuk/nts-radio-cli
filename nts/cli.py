@@ -36,9 +36,9 @@ def format_time(timestamp):
     return local_time.strftime("%H:%M")
 
 
-def format_time_range(start_timestamp, end_timestamp):
-    """Format a time range from start and end timestamps"""
-    return f"{format_time(start_timestamp)} - {format_time(end_timestamp)}"
+def format_time_range(show):
+    """Format a time range from a show object"""
+    return f"{format_time(show['start_timestamp'])} - {format_time(show['end_timestamp'])}"
 
 
 def get_nts_data():
@@ -80,7 +80,7 @@ def create_show_panel(show, channel, channel_num, show_art=False, art_width=80, 
     show_info.append(f"{format_show_title(show['broadcast_title'])}\n", style="bold")
 
     # Time
-    time_str = format_time_range(show['start_timestamp'], show['end_timestamp'])
+    time_str = format_time_range(show)
     show_info.append(time_str, style="yellow")
 
     # Location
@@ -143,7 +143,7 @@ def create_upcoming_table(channel):
     for i in range(1, 6):
         next_show = channel.get(f'next{i}')
         if next_show:
-            time_str = format_time_range(next_show['start_timestamp'], next_show['end_timestamp'])
+            time_str = format_time_range(next_show)
             title = format_show_title(next_show['broadcast_title'])
             upcoming_text.append(f"\n{time_str} ", style="yellow")
             upcoming_text.append(title)
@@ -206,7 +206,7 @@ def schedule(ctx):
             current = channel['now']
             title = format_show_title(current['broadcast_title'])
             table.add_row(
-                format_time_range(current['start_timestamp'], current['end_timestamp']),
+                format_time_range(current),
                 Text(title, style="bold blue")
             )
 
@@ -216,7 +216,7 @@ def schedule(ctx):
                 if next_show:
                     title = format_show_title(next_show['broadcast_title'])
                     table.add_row(
-                        format_time_range(next_show['start_timestamp'], next_show['end_timestamp']),
+                        format_time_range(next_show),
                         title
                     )
 
