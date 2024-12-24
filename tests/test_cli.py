@@ -6,6 +6,7 @@ from nts.cli import (
     create_show_panel,
     json,
     info,
+    stream_url,
 )
 import json as json_lib
 
@@ -122,7 +123,26 @@ def test_info_command():
     result = runner.invoke(info, obj={"no_color": False})
     assert result.exit_code == 0
     # Verify key information is present in the output
-    assert "NTS Radio" in result.output
+    assert "NTS RADIO INFO" in result.output
+    assert "NTS is an online radio station" in result.output
     assert "stream-relay-geo.ntslive.net/stream" in result.output
     assert "stream-relay-geo.ntslive.net/stream2" in result.output
     assert "nts.live" in result.output
+
+
+def test_stream_url_command():
+    runner = CliRunner()
+    
+    # Test channel 1
+    result = runner.invoke(stream_url, ["1"], obj={"no_color": False})
+    assert result.exit_code == 0
+    assert result.output.strip() == "https://stream-relay-geo.ntslive.net/stream"
+    
+    # Test channel 2
+    result = runner.invoke(stream_url, ["2"], obj={"no_color": False})
+    assert result.exit_code == 0
+    assert result.output.strip() == "https://stream-relay-geo.ntslive.net/stream2"
+    
+    # Test invalid channel
+    result = runner.invoke(stream_url, ["3"], obj={"no_color": False})
+    assert result.exit_code != 0  # Should fail with invalid choice

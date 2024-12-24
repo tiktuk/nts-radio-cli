@@ -74,6 +74,26 @@ nts-radio info
 
 This command displays general information about NTS, including stream URLs for both channels.
 
+### Get Stream URL
+
+```bash
+nts-radio stream-url <channel>
+```
+
+Get just the stream URL for a specific channel (1 or 2). Useful for piping to other applications.
+
+Examples:
+```bash
+# Get channel 1 stream URL
+nts-radio stream-url 1
+
+# Get channel 2 stream URL
+nts-radio stream-url 2
+
+# Example: Play channel 1 in mpv
+nts-radio stream-url 1 | xargs mpv
+```
+
 ## Features
 
 - Display currently playing shows on both NTS channels
