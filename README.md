@@ -92,6 +92,9 @@ nts-radio stream-url 2
 
 # Example: Play channel 1 in mpv
 nts-radio stream-url 1 | xargs mpv
+
+# Example: Play channel 2 in VLC
+nts-radio stream-url 2 | xargs vlc
 ```
 
 ## Features
