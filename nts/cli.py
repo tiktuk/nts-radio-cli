@@ -101,8 +101,6 @@ def create_show_panel(show, channel, channel_num, show_art=False, art_width=80, 
     panel = Panel(
         Group(
             show_info,
-            Text("\n\nUPCOMING\n", style="bold"),
-            Text("─" * 40 + "\n"),  # Separator line
             upcoming_table
         ),
         title=f"CHANNEL {channel_num}",
