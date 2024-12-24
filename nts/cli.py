@@ -48,9 +48,9 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
     # Show title
     title = html.unescape(show['broadcast_title'])
     if "(R)" in title:
-        show_info.append(f"{title}\n", style="bold magenta")
+        show_info.append(f"{title}\n", style="bold")
     else:
-        show_info.append(f"{title}\n", style="bold blue")
+        show_info.append(f"{title} {LIVE_INDICATOR}\n", style="bold")
 
     # Time
     time_str = f"{format_time(show['start_timestamp'])} - {format_time(show['end_timestamp'])}\n"
@@ -108,8 +108,10 @@ def create_upcoming_table(channel):
         if next_show:
             time_str = f"{format_time(next_show['start_timestamp'])} - {format_time(next_show['end_timestamp'])}"
             title = html.unescape(next_show['broadcast_title'])
-            style = "magenta" if "(R)" in title else "white"
-            table.add_row(time_str, Text(title, style=style))
+            if "(R)" in title:
+                table.add_row(time_str, Text(title))
+            else:
+                table.add_row(time_str, Text(f"{title} {LIVE_INDICATOR}"))
 
     return Panel(table, title="UPCOMING", border_style="blue", box=box.ROUNDED)
 
