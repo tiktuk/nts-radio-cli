@@ -132,17 +132,17 @@ def test_info_command():
 
 def test_stream_url_command():
     runner = CliRunner()
-    
+
     # Test channel 1
     result = runner.invoke(stream_url, ["1"], obj={"no_color": False})
     assert result.exit_code == 0
     assert result.output.strip() == "https://stream-relay-geo.ntslive.net/stream"
-    
+
     # Test channel 2
     result = runner.invoke(stream_url, ["2"], obj={"no_color": False})
     assert result.exit_code == 0
     assert result.output.strip() == "https://stream-relay-geo.ntslive.net/stream2"
-    
+
     # Test invalid channel
     result = runner.invoke(stream_url, ["3"], obj={"no_color": False})
     assert result.exit_code != 0  # Should fail with invalid choice

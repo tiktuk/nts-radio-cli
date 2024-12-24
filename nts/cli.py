@@ -19,7 +19,7 @@ from rich.console import Group
 LIVE_INDICATOR = "🔴"
 STREAM_URLS = {
     "1": "https://stream-relay-geo.ntslive.net/stream",
-    "2": "https://stream-relay-geo.ntslive.net/stream2"
+    "2": "https://stream-relay-geo.ntslive.net/stream2",
 }
 
 
@@ -295,11 +295,12 @@ def info(ctx):
 
 
 @click.command()
-@click.argument('channel', type=click.Choice(['1', '2']))
+@click.argument("channel", type=click.Choice(["1", "2"]))
 @click.pass_context
 def stream_url(ctx, channel):
     """Output stream URL for the specified channel (1 or 2)"""
     print(STREAM_URLS[channel])
+
 
 cli.add_command(now)
 cli.add_command(schedule)
