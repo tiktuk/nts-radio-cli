@@ -1,6 +1,19 @@
 from click.testing import CliRunner
-from nts.cli import format_time, get_nts_data, create_show_panel, json
+from nts.cli import format_time, format_time_range, get_nts_data, create_show_panel, json
 import json as json_lib
+
+def test_format_time_range():
+    show = {
+        "start_timestamp": "2024-03-14T15:00:00Z",
+        "end_timestamp": "2024-03-14T17:00:00Z"
+    }
+    time_range = format_time_range(show)
+    assert " - " in time_range
+    assert len(time_range.split(" - ")) == 2
+    # Each time should be in HH:MM format
+    start_time, end_time = time_range.split(" - ")
+    assert len(start_time) == 5 and ":" in start_time
+    assert len(end_time) == 5 and ":" in end_time
 
 def test_format_time():
     # Test UTC to local time conversion
@@ -60,7 +73,7 @@ def test_create_show_panel():
 
 def test_no_color_option():
     runner = CliRunner()
-    result = runner.invoke(json, ['--no-color'])
+    result = runner.invoke(json, obj={'no_color': True})
     assert result.exit_code == 0
 
 def test_json_command(mocker):
@@ -82,7 +95,7 @@ def test_json_command(mocker):
     
     # Run the command
     runner = CliRunner()
-    result = runner.invoke(json)
+    result = runner.invoke(json, obj={'no_color': False})
     
     # Verify the output is valid JSON and matches our test data
     assert result.exit_code == 0
