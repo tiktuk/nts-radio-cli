@@ -21,9 +21,12 @@ LIVE_INDICATOR = "🔴"
 
 
 @click.group()
-def cli():
+@click.option('--no-color', is_flag=True, help='Disable colored output')
+@click.pass_context
+def cli(ctx, no_color):
     """NTS Radio CLI - Check what's playing on NTS Radio"""
-    pass
+    ctx.ensure_object(dict)
+    ctx.obj['no_color'] = no_color
 
 
 def format_time(timestamp):
@@ -158,9 +161,10 @@ def create_upcoming_table(channel):
 @click.option(
     '--art-height', default=40, type=int, help='Height of the show art in characters (default: 40)'
 )
-def now(art, art_width, art_height):
+@click.pass_context
+def now(ctx, art, art_width, art_height):
     """Display currently playing shows on NTS"""
-    console = Console()
+    console = Console(no_color=ctx.obj['no_color'])
 
     data = fetch_nts_data_with_status(console)
 
@@ -185,9 +189,10 @@ def now(art, art_width, art_height):
 
 
 @click.command()
-def schedule():
+@click.pass_context
+def schedule(ctx):
     """Display full schedule for both channels"""
-    console = Console()
+    console = Console(no_color=ctx.obj['no_color'])
 
     try:
         data = fetch_nts_data_with_status(console)
@@ -223,9 +228,10 @@ def schedule():
 
 
 @click.command()
-def json():
+@click.pass_context
+def json(ctx):
     """Output raw JSON data from NTS API"""
-    console = Console()
+    console = Console(no_color=ctx.obj['no_color'])
     try:
         data = fetch_nts_data_with_status(console)
         console.print_json(data=data)

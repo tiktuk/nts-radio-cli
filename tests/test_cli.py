@@ -58,6 +58,11 @@ def test_create_show_panel():
     assert show_panel is not None
     assert art_panel is None
 
+def test_no_color_option():
+    runner = CliRunner()
+    result = runner.invoke(json, ['--no-color'])
+    assert result.exit_code == 0
+
 def test_json_command(mocker):
     # Mock the API response
     mock_response = mocker.Mock()

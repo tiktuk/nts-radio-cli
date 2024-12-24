@@ -73,6 +73,15 @@ This command outputs the raw JSON data from the NTS API, which can be useful for
 - View full schedule for both channels
 - Optional ASCII art display of show artwork with customizable dimensions
 - Access raw JSON data from the NTS API
+- Option to disable colored output
+
+### Disable Colors
+
+You can disable colored output using the `--no-color` option:
+
+```bash
+nts-radio --no-color json
+```
 
 ## Requirements
 
