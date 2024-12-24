@@ -261,7 +261,7 @@ def info(ctx):
     # Create info panel
     info_text = Text()
     info_text.append(
-        "NTS is an online radio station based in London with studios in London, Shanghai and Los Angeles. This application, `nts-radio-cli` is an unofficial, supporter-effort to get NTS in the terminal :) .\n\n"
+        "NTS is an online radio station based in London with studios in London, Shanghai and Los Angeles. This application, `nts-radio-cli` is an unofficial supporter-effort to get NTS in the terminal :) .\n\n"
     )
 
     # Stream information
