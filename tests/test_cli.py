@@ -1,4 +1,6 @@
-from nts.cli import format_time, get_nts_data, create_show_panel
+from click.testing import CliRunner
+from nts.cli import format_time, get_nts_data, create_show_panel, json
+import json as json_lib
 
 def test_format_time():
     # Test UTC to local time conversion
@@ -56,3 +58,28 @@ def test_create_show_panel():
     assert show_panel is not None
     assert art_panel is None
 
+def test_json_command(mocker):
+    # Mock the API response
+    mock_response = mocker.Mock()
+    test_data = {
+        "results": [
+            {
+                "now": {
+                    "broadcast_title": "Test Show",
+                    "start_timestamp": "2024-03-14T15:00:00Z",
+                    "end_timestamp": "2024-03-14T17:00:00Z"
+                }
+            }
+        ]
+    }
+    mock_response.json.return_value = test_data
+    mocker.patch('requests.get', return_value=mock_response)
+    
+    # Run the command
+    runner = CliRunner()
+    result = runner.invoke(json)
+    
+    # Verify the output is valid JSON and matches our test data
+    assert result.exit_code == 0
+    output_data = json_lib.loads(result.output)
+    assert output_data == test_data

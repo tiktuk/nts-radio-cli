@@ -58,12 +58,21 @@ nts-radio now --art --art-width 40 --art-height 20
 nts-radio schedule
 ```
 
+### Get Raw JSON Data
+
+```bash
+nts-radio json
+```
+
+This command outputs the raw JSON data from the NTS API, which can be useful for debugging or piping to other tools.
+
 ## Features
 
 - Display currently playing shows on both NTS channels
 - Show upcoming broadcasts
 - View full schedule for both channels
 - Optional ASCII art display of show artwork with customizable dimensions
+- Access raw JSON data from the NTS API
 
 ## Requirements
 

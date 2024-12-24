@@ -222,8 +222,19 @@ def schedule():
         handle_command_error(console, e)
 
 
+@click.command()
+def json():
+    """Output raw JSON data from NTS API"""
+    console = Console()
+    try:
+        data = fetch_nts_data_with_status(console)
+        console.print_json(data=data)
+    except Exception as e:
+        handle_command_error(console, e)
+
 cli.add_command(now)
 cli.add_command(schedule)
+cli.add_command(json)
 
 if __name__ == '__main__':
     cli()
