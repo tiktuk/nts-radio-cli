@@ -130,3 +130,8 @@ uv sync --group dev
 # Run tests
 uv run pytest
 ```
+
+## Related projects
+
+- [brianmichel/Marconio: A simple NTS.live macOS application](https://github.com/brianmichel/Marconio)
+- [tiktuk/NTS-Now-Playing-Example: Example of using the NTS api to display now playing info](https://github.com/tiktuk/NTS-Now-Playing-Example)
