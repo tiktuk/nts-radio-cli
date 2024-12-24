@@ -1,5 +1,3 @@
-import pytest
-from datetime import datetime
 from nts.cli import format_time, get_nts_data, create_show_panel, create_upcoming_table
 
 def test_format_time():
