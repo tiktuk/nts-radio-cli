@@ -43,7 +43,6 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
 
     # Create show info text
     show_info = Text()
-    show_info.append(f"CHANNEL {channel_num}\n", style="bold white on black")
 
     # Show title
     title = html.unescape(show['broadcast_title'])
@@ -73,7 +72,7 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
         )
 
     show_panel = Panel(
-        show_info, title="NOW PLAYING", border_style="blue", box=box.ROUNDED
+        show_info, title=f"CHANNEL {channel_num}", border_style="blue", box=box.ROUNDED
     )
 
     art_panel = None
