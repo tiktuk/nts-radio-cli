@@ -282,7 +282,10 @@ def info(ctx):
     info_text.append("Broadcast Locations: ", style="bold")
     info_text.append("https://www.nts.live/explore/location\n")
     info_text.append("Become a Supporter: ", style="bold")
-    info_text.append("https://www.nts.live/supporters\n")
+    info_text.append("https://www.nts.live/supporters\n\n")
+
+    info_text.append("Source code:\n", style="bold yellow")
+    info_text.append("https://github.com/tiktuk/nts-radio-cli\n\n")
 
     panel = Panel(
         info_text,
