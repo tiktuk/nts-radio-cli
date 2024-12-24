@@ -47,6 +47,12 @@ def get_nts_data():
         raise Exception(f"Error connecting to NTS: {str(e)}")
 
 
+def format_show_title(title):
+    """Format show title with live indicator if not a replay"""
+    title = html.unescape(title)
+    return title if "(R)" in title else f"{title} {LIVE_INDICATOR}"
+
+
 def create_show_panel(show, channel_num, show_art=False, art_width=80, art_height=40):
     """Create a rich panel for the current show"""
     details = show.get('embeds', {}).get('details', {})
@@ -55,11 +61,7 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
     show_info = Text()
 
     # Show title
-    title = html.unescape(show['broadcast_title'])
-    if "(R)" in title:
-        show_info.append(f"{title}\n", style="bold")
-    else:
-        show_info.append(f"{title} {LIVE_INDICATOR}\n", style="bold")
+    show_info.append(f"{format_show_title(show['broadcast_title'])}\n", style="bold")
 
     # Time
     time_str = format_time_range(show['start_timestamp'], show['end_timestamp'])
@@ -115,11 +117,8 @@ def create_upcoming_table(channel):
         next_show = channel.get(f'next{i}')
         if next_show:
             time_str = format_time_range(next_show['start_timestamp'], next_show['end_timestamp'])
-            title = html.unescape(next_show['broadcast_title'])
-            if "(R)" in title:
-                table.add_row(time_str, Text(title))
-            else:
-                table.add_row(time_str, Text(f"{title} {LIVE_INDICATOR}"))
+            title = format_show_title(next_show['broadcast_title'])
+            table.add_row(time_str, Text(title))
 
     return Panel(table, title="UPCOMING", border_style="blue", box=box.ROUNDED)
 
