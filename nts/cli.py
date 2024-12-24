@@ -33,8 +33,13 @@ def format_time(timestamp):
 
 def get_nts_data():
     """Fetch current NTS broadcast data"""
-    response = requests.get('https://www.nts.live/api/v2/live')
-    return response.json()
+    try:
+        response = requests.get('https://www.nts.live/api/v2/live')
+        return response.json()
+    except requests.exceptions.ConnectionError:
+        raise Exception("Unable to connect to NTS. Please check your internet connection and try again.")
+    except requests.exceptions.RequestException as e:
+        raise Exception(f"Error connecting to NTS: {str(e)}")
 
 
 def create_show_panel(show, channel_num, show_art=False, art_width=80, art_height=40):
