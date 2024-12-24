@@ -1,6 +1,6 @@
 [project]
 name = "nts-radio-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "CLI tool to check what's playing on NTS Radio"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -12,6 +12,22 @@ dependencies = [
     "rich-pixels>=1.1.1",
     "pillow>=10.0.0",
 ]
+authors = [{ name = "Tuk Bredsdorff", email = "tukodeb@gmail.com" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Utilities",
+]
 
 [dependency-groups]
 dev = [
@@ -21,6 +37,10 @@ dev = [
 
 [project.scripts]
 nts-radio = "nts.cli:cli"
+
+[project.urls]
+Source = "https://github.com/tiktuk/nts-radio-cli"
+Issues = "https://github.com/tiktuk/nts-radio-cli/issues"
 
 [build-system]
 requires = ["hatchling"]
