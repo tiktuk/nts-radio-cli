@@ -248,9 +248,49 @@ def json(ctx):
         handle_command_error(console, e)
 
 
+@click.command()
+@click.pass_context
+def info(ctx):
+    """Display information about NTS Radio and stream URLs"""
+    console = Console(no_color=ctx.obj["no_color"])
+    
+    # Create info panel
+    info_text = Text()
+    info_text.append("NTS is an online radio station based in London with studios in London, Shanghai and Los Angeles. This application, `nts-radio-cli` is an unofficial, supporter-effort to get NTS in the terminal :) .\n\n")
+    
+    # Stream information
+    info_text.append("Stream URLs:\n", style="bold yellow")
+    info_text.append("Channel 1: ", style="bold")
+    info_text.append("https://stream-relay-geo.ntslive.net/stream\n")
+    info_text.append("Channel 2: ", style="bold")
+    info_text.append("https://stream-relay-geo.ntslive.net/stream2\n\n")
+    
+    # Additional useful info
+    info_text.append("Useful Links:\n", style="bold yellow")
+    info_text.append("Website: ", style="bold")
+    info_text.append("https://www.nts.live\n")
+    info_text.append("Shows Archive: ", style="bold")
+    info_text.append("https://www.nts.live/shows\n")
+    info_text.append("Infinite Mixtapes: ", style="bold")
+    info_text.append("https://www.nts.live/infinite-mixtapes\n")
+    info_text.append("Broadcast Locations: ", style="bold")
+    info_text.append("https://www.nts.live/explore/location\n")
+    info_text.append("Become a Supporter: ", style="bold")
+    info_text.append("https://www.nts.live/supporters\n")
+    
+    panel = Panel(
+        info_text,
+        title="NTS RADIO INFO",
+        border_style="blue",
+        box=box.ROUNDED,
+    )
+    
+    console.print(panel)
+
 cli.add_command(now)
 cli.add_command(schedule)
 cli.add_command(json)
+cli.add_command(info)
 
 if __name__ == "__main__":
     cli()

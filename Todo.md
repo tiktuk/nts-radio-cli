@@ -11,6 +11,8 @@
 
 - [x] Json output
 - [x] Make it possible to turn off colours
+- [x] Links to streams
 - [ ] Make the lists of upcoming shows align even when the descriptions have different numbers of lines
-- [ ] Links to streams
 - [ ] Make it possible to log in and get current songs, favourites etc
+- [ ] Play command that starts playing the current show
+- [ ] Render map of [Radio Broadcast Locations](https://www.nts.live/explore/location)

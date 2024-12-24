@@ -66,6 +66,14 @@ nts-radio json
 
 This command outputs the raw JSON data from the NTS API, which can be useful for debugging or piping to other tools.
 
+### View NTS Information and Stream URLs
+
+```bash
+nts-radio info
+```
+
+This command displays general information about NTS, including stream URLs for both channels.
+
 ## Features
 
 - Display currently playing shows on both NTS channels
@@ -73,6 +81,7 @@ This command outputs the raw JSON data from the NTS API, which can be useful for
 - View full schedule for both channels
 - Optional ASCII art display of show artwork with customizable dimensions
 - Access raw JSON data from the NTS API
+- View stream URLs and general NTS Radio information
 - Option to disable colored output
 
 ### Disable Colors

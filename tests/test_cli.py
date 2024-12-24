@@ -5,6 +5,7 @@ from nts.cli import (
     get_nts_data,
     create_show_panel,
     json,
+    info,
 )
 import json as json_lib
 
@@ -110,8 +111,18 @@ def test_json_command(mocker):
     # Run the command
     runner = CliRunner()
     result = runner.invoke(json, obj={"no_color": False})
-
     # Verify the output is valid JSON and matches our test data
     assert result.exit_code == 0
     output_data = json_lib.loads(result.output)
     assert output_data == test_data
+
+
+def test_info_command():
+    runner = CliRunner()
+    result = runner.invoke(info, obj={"no_color": False})
+    assert result.exit_code == 0
+    # Verify key information is present in the output
+    assert "NTS Radio" in result.output
+    assert "stream-relay-geo.ntslive.net/stream" in result.output
+    assert "stream-relay-geo.ntslive.net/stream2" in result.output
+    assert "nts.live" in result.output
