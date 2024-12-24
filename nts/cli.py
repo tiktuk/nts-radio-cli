@@ -52,24 +52,23 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
         show_info.append(f"{title} {LIVE_INDICATOR}\n", style="bold")
 
     # Time
-    time_str = f"{format_time(show['start_timestamp'])} - {format_time(show['end_timestamp'])}\n"
+    time_str = f"{format_time(show['start_timestamp'])} - {format_time(show['end_timestamp'])}"
     show_info.append(time_str, style="yellow")
-
-    # Description
-    if details.get('description'):
-        show_info.append(f"\n{details['description']}\n", style="white")
-
-    # Genres
-    if details.get('genres'):
-        show_info.append("\nGenres: ", style="bright_black")
-        genres = [genre['value'] for genre in details['genres']]
-        show_info.append(", ".join(genres), style="green")
 
     # Location
     if details.get('location_long'):
         show_info.append(
-            f"\nLocation: {details['location_long']}", style="bright_black"
+            f", {details['location_long']}"
         )
+
+    # Description
+    if details.get('description'):
+        show_info.append(f"\n\n{details['description']}")
+
+    # Genres
+    if details.get('genres'):
+        genres = ", ".join([genre['value'] for genre in details['genres']])
+        show_info.append(f"\n\n{genres}", style="green")
 
     show_panel = Panel(
         show_info, title=f"CHANNEL {channel_num}", border_style="blue", box=box.ROUNDED
