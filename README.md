@@ -68,3 +68,15 @@ nts-radio schedule
 ## Requirements
 
 - Python 3.8 or higher
+
+## Testing
+
+To run the tests:
+
+```bash
+# Install test dependencies
+uv sync --group dev
+
+# Run tests
+uv run pytest
+```

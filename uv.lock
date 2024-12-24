@@ -185,24 +185,32 @@ source = { editable = "." }
 dependencies = [
     { name = "click" },
     { name = "pillow" },
-    { name = "pytest" },
-    { name = "pytest-mock" },
     { name = "pytz" },
     { name = "requests" },
     { name = "rich" },
     { name = "rich-pixels" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-mock" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = ">=8.1.7" },
     { name = "pillow", specifier = ">=10.0.0" },
-    { name = "pytest", specifier = ">=8.3.4" },
-    { name = "pytest-mock", specifier = ">=3.14.0" },
     { name = "pytz", specifier = ">=2024.2" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "rich", specifier = ">=13.9.4" },
     { name = "rich-pixels", specifier = ">=1.1.1" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.3.4" },
+    { name = "pytest-mock", specifier = ">=3.14.0" },
 ]
 
 [[package]]
