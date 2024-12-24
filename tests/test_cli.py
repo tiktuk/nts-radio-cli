@@ -1,4 +1,4 @@
-from nts.cli import format_time, get_nts_data, create_show_panel, create_upcoming_table
+from nts.cli import format_time, get_nts_data, create_show_panel
 
 def test_format_time():
     # Test UTC to local time conversion
@@ -43,26 +43,16 @@ def test_create_show_panel():
         }
     }
     
-    show_panel, art_panel = create_show_panel(show_data, 1, show_art=False)
-    # Since rich panels are complex objects, we'll just verify it's created
-    assert show_panel is not None
-    assert art_panel is None
-
-def test_create_upcoming_table():
-    # Test data
     channel_data = {
         "next1": {
             "broadcast_title": "Upcoming Show 1",
             "start_timestamp": "2024-03-14T17:00:00Z",
             "end_timestamp": "2024-03-14T19:00:00Z"
-        },
-        "next2": {
-            "broadcast_title": "Upcoming Show 2 (R)",
-            "start_timestamp": "2024-03-14T19:00:00Z",
-            "end_timestamp": "2024-03-14T21:00:00Z"
         }
     }
     
-    table = create_upcoming_table(channel_data)
-    # Verify table is created
-    assert table is not None
+    show_panel, art_panel = create_show_panel(show_data, channel_data, 1, show_art=False)
+    # Since rich panels are complex objects, we'll just verify it's created
+    assert show_panel is not None
+    assert art_panel is None
+

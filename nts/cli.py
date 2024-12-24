@@ -13,6 +13,7 @@ from rich.layout import Layout
 from rich import box
 from rich_pixels import Pixels
 from PIL import Image
+from rich.console import Group
 
 
 LIVE_INDICATOR = "🔴"
@@ -64,8 +65,8 @@ def handle_command_error(console, e):
     console.print(f"[bold red]Error:[/] {str(e)}")
 
 
-def create_show_panel(show, channel_num, show_art=False, art_width=80, art_height=40):
-    """Create a rich panel for the current show"""
+def create_show_panel(show, channel, channel_num, show_art=False, art_width=80, art_height=40):
+    """Create a rich panel for the current show and upcoming shows"""
     details = show.get('embeds', {}).get('details', {})
 
     # Create show info text
@@ -93,8 +94,20 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
         genres = ", ".join([genre['value'] for genre in details['genres']])
         show_info.append(f"\n\n{genres}", style="green")
 
-    show_panel = Panel(
-        show_info, title=f"CHANNEL {channel_num}", border_style="blue", box=box.ROUNDED
+    # Create upcoming table
+    upcoming_table = create_upcoming_table(channel)
+    
+    # Create single panel with all information
+    panel = Panel(
+        Group(
+            show_info,
+            Text("\n\nUPCOMING\n", style="bold"),
+            Text("─" * 40 + "\n"),  # Separator line
+            upcoming_table
+        ),
+        title=f"CHANNEL {channel_num}",
+        border_style="blue",
+        box=box.ROUNDED
     )
 
     art_panel = None
@@ -114,7 +127,7 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
                 f"Error loading show art: {str(e)}", title="SHOW ART", border_style="red", box=box.ROUNDED
             )
 
-    return show_panel, art_panel
+    return panel, art_panel
 
 
 def create_upcoming_table(channel):
@@ -131,7 +144,7 @@ def create_upcoming_table(channel):
             title = format_show_title(next_show['broadcast_title'])
             table.add_row(time_str, Text(title))
 
-    return Panel(table, title="UPCOMING", border_style="blue", box=box.ROUNDED)
+    return table
 
 
 @click.command()
@@ -148,34 +161,26 @@ def now(art, art_width, art_height):
     """Display currently playing shows on NTS"""
     console = Console()
 
-    try:
-        data = fetch_nts_data_with_status(console)
+    data = fetch_nts_data_with_status(console)
 
-        # Create main layout with two channels
-        layout = Layout()
-        layout.split_row(Layout(name="channel1"), Layout(name="channel2"))
+    # Create main layout with two channels side by side
+    layout = Layout()
+    layout.split_row(Layout(name="channel1"), Layout(name="channel2"))
 
-        for idx, channel in enumerate(data['results']):
-            # Create channel layout with optional art section
-            sections = []
-            show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art, art_width=art_width, art_height=art_height)
-            
-            if art and art_panel:
-                sections.append(Layout(art_panel, name="art"))
-            sections.extend([
-                Layout(show_panel, name="show_info"),
-                Layout(create_upcoming_table(channel), name="upcoming")
-            ])
-            
-            # Update channel with all sections
-            channel_layout = Layout()
-            channel_layout.split_column(*sections)
-            layout[f"channel{idx + 1}"].update(channel_layout)
+    for idx, channel in enumerate(data['results']):
+        show_panel, art_panel = create_show_panel(channel['now'], channel, idx + 1, show_art=art, art_width=art_width, art_height=art_height)
+        
+        # Create a vertical group for each channel
+        channel_layout = Layout()
+        panels = []
+        if art and art_panel:
+            panels.append(Layout(art_panel))
+        panels.append(Layout(show_panel))
+        
+        channel_layout.split_column(*panels)
+        layout[f"channel{idx + 1}"].update(channel_layout)
 
-        console.print(layout)
-
-    except Exception as e:
-        handle_command_error(console, e)
+    console.print(layout)
 
 
 @click.command()
