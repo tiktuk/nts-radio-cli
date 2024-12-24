@@ -15,6 +15,9 @@ from rich_pixels import Pixels
 from PIL import Image
 
 
+LIVE_INDICATOR = "🔴"
+
+
 @click.group()
 def cli():
     """NTS Radio CLI - Check what's playing on NTS Radio"""
@@ -182,7 +185,7 @@ def schedule():
                 Text(
                     html.unescape(current['broadcast_title']),
                     style="bold blue"
-                ), "🔴" if "(R)" not in current['broadcast_title'] else ""
+                ), LIVE_INDICATOR if "(R)" not in current['broadcast_title'] else ""
             )
 
             # Add upcoming shows
@@ -191,7 +194,7 @@ def schedule():
                 if next_show:
                     title = html.unescape(next_show['broadcast_title'])
                     is_replay = "(R)" in title
-                    show_type = "🔴" if not is_replay else ""
+                    show_type = LIVE_INDICATOR if not is_replay else ""
                     table.add_row(
                         f"{format_time(next_show['start_timestamp'])} - {format_time(next_show['end_timestamp'])}",
                         title, show_type
