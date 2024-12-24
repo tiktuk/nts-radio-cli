@@ -132,29 +132,25 @@ def now(art, art_width, art_height):
         with console.status("[bold blue]Fetching NTS data..."):
             data = get_nts_data()
 
+        # Create main layout with two channels
         layout = Layout()
         layout.split_row(Layout(name="channel1"), Layout(name="channel2"))
 
         for idx, channel in enumerate(data['results']):
-            channel_layout = Layout()
-            if art:
-                channel_layout.split_column(
-                    Layout(name="art"),
-                    Layout(name="show_info"),
-                    Layout(name="upcoming")
-                )
-            else:
-                channel_layout.split_column(
-                    Layout(name="show_info"),
-                    Layout(name="upcoming")
-                )
-
+            # Create channel layout with optional art section
+            sections = []
             show_panel, art_panel = create_show_panel(channel['now'], idx + 1, show_art=art, art_width=art_width, art_height=art_height)
-            if art:
-                channel_layout["art"].update(art_panel if art_panel else Layout())
-            channel_layout["show_info"].update(show_panel)
-            channel_layout["upcoming"].update(create_upcoming_table(channel))
-
+            
+            if art and art_panel:
+                sections.append(Layout(art_panel, name="art"))
+            sections.extend([
+                Layout(show_panel, name="show_info"),
+                Layout(create_upcoming_table(channel), name="upcoming")
+            ])
+            
+            # Update channel with all sections
+            channel_layout = Layout()
+            channel_layout.split_column(*sections)
             layout[f"channel{idx + 1}"].update(channel_layout)
 
         console.print(layout)
