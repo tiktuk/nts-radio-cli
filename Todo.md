@@ -5,6 +5,7 @@
 - [x] Remove duplicate layout code
 - [x] DRY time formatting
 - [x] Fix truncation of genres and long descifiptions
+- [x] Run formatter
 
 ## Ideas and possible improvements
 

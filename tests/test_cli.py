@@ -1,11 +1,18 @@
 from click.testing import CliRunner
-from nts.cli import format_time, format_time_range, get_nts_data, create_show_panel, json
+from nts.cli import (
+    format_time,
+    format_time_range,
+    get_nts_data,
+    create_show_panel,
+    json,
+)
 import json as json_lib
+
 
 def test_format_time_range():
     show = {
         "start_timestamp": "2024-03-14T15:00:00Z",
-        "end_timestamp": "2024-03-14T17:00:00Z"
+        "end_timestamp": "2024-03-14T17:00:00Z",
     }
     time_range = format_time_range(show)
     assert " - " in time_range
@@ -14,6 +21,7 @@ def test_format_time_range():
     start_time, end_time = time_range.split(" - ")
     assert len(start_time) == 5 and ":" in start_time
     assert len(end_time) == 5 and ":" in end_time
+
 
 def test_format_time():
     # Test UTC to local time conversion
@@ -24,6 +32,7 @@ def test_format_time():
     assert ":" in formatted_time
     assert formatted_time.count(":") == 1
 
+
 def test_get_nts_data(mocker):
     # Mock the requests.get response
     mock_response = mocker.Mock()
@@ -33,15 +42,16 @@ def test_get_nts_data(mocker):
                 "now": {
                     "broadcast_title": "Test Show",
                     "start_timestamp": "2024-03-14T15:00:00Z",
-                    "end_timestamp": "2024-03-14T17:00:00Z"
+                    "end_timestamp": "2024-03-14T17:00:00Z",
                 }
             }
         ]
     }
-    mocker.patch('requests.get', return_value=mock_response)
-    
+    mocker.patch("requests.get", return_value=mock_response)
+
     data = get_nts_data()
     assert data["results"][0]["now"]["broadcast_title"] == "Test Show"
+
 
 def test_create_show_panel():
     # Test data
@@ -53,28 +63,32 @@ def test_create_show_panel():
             "details": {
                 "description": "Test description",
                 "genres": [{"value": "Electronic"}, {"value": "Ambient"}],
-                "location_long": "London, UK"
+                "location_long": "London, UK",
             }
-        }
+        },
     }
-    
+
     channel_data = {
         "next1": {
             "broadcast_title": "Upcoming Show 1",
             "start_timestamp": "2024-03-14T17:00:00Z",
-            "end_timestamp": "2024-03-14T19:00:00Z"
+            "end_timestamp": "2024-03-14T19:00:00Z",
         }
     }
-    
-    show_panel, art_panel = create_show_panel(show_data, channel_data, 1, show_art=False)
+
+    show_panel, art_panel = create_show_panel(
+        show_data, channel_data, 1, show_art=False
+    )
     # Since rich panels are complex objects, we'll just verify it's created
     assert show_panel is not None
     assert art_panel is None
 
+
 def test_no_color_option():
     runner = CliRunner()
-    result = runner.invoke(json, obj={'no_color': True})
+    result = runner.invoke(json, obj={"no_color": True})
     assert result.exit_code == 0
+
 
 def test_json_command(mocker):
     # Mock the API response
@@ -85,18 +99,18 @@ def test_json_command(mocker):
                 "now": {
                     "broadcast_title": "Test Show",
                     "start_timestamp": "2024-03-14T15:00:00Z",
-                    "end_timestamp": "2024-03-14T17:00:00Z"
+                    "end_timestamp": "2024-03-14T17:00:00Z",
                 }
             }
         ]
     }
     mock_response.json.return_value = test_data
-    mocker.patch('requests.get', return_value=mock_response)
-    
+    mocker.patch("requests.get", return_value=mock_response)
+
     # Run the command
     runner = CliRunner()
-    result = runner.invoke(json, obj={'no_color': False})
-    
+    result = runner.invoke(json, obj={"no_color": False})
+
     # Verify the output is valid JSON and matches our test data
     assert result.exit_code == 0
     output_data = json_lib.loads(result.output)
