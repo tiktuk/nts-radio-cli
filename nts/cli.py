@@ -59,6 +59,11 @@ def fetch_nts_data_with_status(console):
         return get_nts_data()
 
 
+def handle_command_error(console, e):
+    """Handle and display command errors"""
+    console.print(f"[bold red]Error:[/] {str(e)}")
+
+
 def create_show_panel(show, channel_num, show_art=False, art_width=80, art_height=40):
     """Create a rich panel for the current show"""
     details = show.get('embeds', {}).get('details', {})
@@ -170,7 +175,7 @@ def now(art, art_width, art_height):
         console.print(layout)
 
     except Exception as e:
-        console.print(f"[bold red]Error:[/] {str(e)}")
+        handle_command_error(console, e)
 
 
 @click.command()
@@ -211,7 +216,7 @@ def schedule():
             console.print()  # Add spacing between channels
 
     except Exception as e:
-        console.print(f"[bold red]Error:[/] {str(e)}")
+        handle_command_error(console, e)
 
 
 cli.add_command(now)
