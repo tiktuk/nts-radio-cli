@@ -31,6 +31,11 @@ def format_time(timestamp):
     return local_time.strftime("%H:%M")
 
 
+def format_time_range(start_timestamp, end_timestamp):
+    """Format a time range from start and end timestamps"""
+    return f"{format_time(start_timestamp)} - {format_time(end_timestamp)}"
+
+
 def get_nts_data():
     """Fetch current NTS broadcast data"""
     try:
@@ -57,7 +62,7 @@ def create_show_panel(show, channel_num, show_art=False, art_width=80, art_heigh
         show_info.append(f"{title} {LIVE_INDICATOR}\n", style="bold")
 
     # Time
-    time_str = f"{format_time(show['start_timestamp'])} - {format_time(show['end_timestamp'])}"
+    time_str = format_time_range(show['start_timestamp'], show['end_timestamp'])
     show_info.append(time_str, style="yellow")
 
     # Location
@@ -109,7 +114,7 @@ def create_upcoming_table(channel):
     for i in range(1, 6):
         next_show = channel.get(f'next{i}')
         if next_show:
-            time_str = f"{format_time(next_show['start_timestamp'])} - {format_time(next_show['end_timestamp'])}"
+            time_str = format_time_range(next_show['start_timestamp'], next_show['end_timestamp'])
             title = html.unescape(next_show['broadcast_title'])
             if "(R)" in title:
                 table.add_row(time_str, Text(title))
@@ -182,7 +187,7 @@ def schedule():
             # Add current show
             current = channel['now']
             table.add_row(
-                f"{format_time(current['start_timestamp'])} - {format_time(current['end_timestamp'])}",
+                format_time_range(current['start_timestamp'], current['end_timestamp']),
                 Text(
                     html.unescape(current['broadcast_title']),
                     style="bold blue"
@@ -197,7 +202,7 @@ def schedule():
                     is_replay = "(R)" in title
                     show_type = LIVE_INDICATOR if not is_replay else ""
                     table.add_row(
-                        f"{format_time(next_show['start_timestamp'])} - {format_time(next_show['end_timestamp'])}",
+                        format_time_range(next_show['start_timestamp'], next_show['end_timestamp']),
                         title, show_type
                     )
 
