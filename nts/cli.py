@@ -185,24 +185,22 @@ def schedule():
 
             # Add current show
             current = channel['now']
+            title = format_show_title(current['broadcast_title'])
             table.add_row(
                 format_time_range(current['start_timestamp'], current['end_timestamp']),
-                Text(
-                    html.unescape(current['broadcast_title']),
-                    style="bold blue"
-                ), LIVE_INDICATOR if "(R)" not in current['broadcast_title'] else ""
+                Text(title, style="bold blue"),
+                "" if "(R)" in title else LIVE_INDICATOR
             )
 
             # Add upcoming shows
             for i in range(1, 18):  # NTS usually provides next 17 shows
                 next_show = channel.get(f'next{i}')
                 if next_show:
-                    title = html.unescape(next_show['broadcast_title'])
-                    is_replay = "(R)" in title
-                    show_type = LIVE_INDICATOR if not is_replay else ""
+                    title = format_show_title(next_show['broadcast_title'])
                     table.add_row(
                         format_time_range(next_show['start_timestamp'], next_show['end_timestamp']),
-                        title, show_type
+                        title,
+                        "" if "(R)" in title else LIVE_INDICATOR
                     )
 
             console.print(table)
