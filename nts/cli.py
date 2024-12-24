@@ -11,6 +11,7 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.layout import Layout
 from rich import box
+from rich.rule import Rule
 from rich_pixels import Pixels
 from PIL import Image
 from rich.console import Group
@@ -94,6 +95,8 @@ def create_show_panel(show, channel, channel_num, show_art=False, art_width=80, 
         genres = ", ".join([genre['value'] for genre in details['genres']])
         show_info.append(f"\n\n{genres}", style="green")
 
+    show_info.append("\n\n")
+
     # Create upcoming table
     upcoming_table = create_upcoming_table(channel)
     
@@ -101,6 +104,7 @@ def create_show_panel(show, channel, channel_num, show_art=False, art_width=80, 
     panel = Panel(
         Group(
             show_info,
+            Rule(title="UPCOMING SHOWS", style="blue"),
             upcoming_table
         ),
         title=f"CHANNEL {channel_num}",
@@ -129,10 +133,8 @@ def create_show_panel(show, channel, channel_num, show_art=False, art_width=80, 
 
 
 def create_upcoming_table(channel):
-    """Create a table of upcoming shows"""
-    table = Table(box=box.SIMPLE)
-    table.add_column("Time", style="yellow")
-    table.add_column("Show", style="white")
+    """Create a list of upcoming shows"""
+    upcoming_text = Text("", style="bold")
 
     # Add next 5 shows
     for i in range(1, 6):
@@ -140,9 +142,10 @@ def create_upcoming_table(channel):
         if next_show:
             time_str = format_time_range(next_show['start_timestamp'], next_show['end_timestamp'])
             title = format_show_title(next_show['broadcast_title'])
-            table.add_row(time_str, Text(title))
+            upcoming_text.append(f"\n{time_str} ", style="yellow")
+            upcoming_text.append(title)
 
-    return table
+    return upcoming_text
 
 
 @click.command()
