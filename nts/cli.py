@@ -53,6 +53,12 @@ def format_show_title(title):
     return title if "(R)" in title else f"{title} {LIVE_INDICATOR}"
 
 
+def fetch_nts_data_with_status(console):
+    """Fetch NTS data with status indicator"""
+    with console.status("[bold blue]Fetching NTS data..."):
+        return get_nts_data()
+
+
 def create_show_panel(show, channel_num, show_art=False, art_width=80, art_height=40):
     """Create a rich panel for the current show"""
     details = show.get('embeds', {}).get('details', {})
@@ -138,8 +144,7 @@ def now(art, art_width, art_height):
     console = Console()
 
     try:
-        with console.status("[bold blue]Fetching NTS data..."):
-            data = get_nts_data()
+        data = fetch_nts_data_with_status(console)
 
         # Create main layout with two channels
         layout = Layout()
@@ -174,8 +179,7 @@ def schedule():
     console = Console()
 
     try:
-        with console.status("[bold blue]Fetching NTS data..."):
-            data = get_nts_data()
+        data = fetch_nts_data_with_status(console)
 
         for idx, channel in enumerate(data['results']):
             table = Table(title=f"Channel {idx + 1} Schedule", box=box.ROUNDED)
