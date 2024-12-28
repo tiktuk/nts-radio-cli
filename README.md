@@ -2,6 +2,20 @@
 
 A command-line interface to check what's playing on NTS Radio.
 
+## Features
+
+- Display currently playing shows on both NTS channels
+- Show upcoming broadcasts
+- View full schedule for both channels
+- Optional ASCII art display of show artwork with customizable dimensions
+- Access raw JSON data from the NTS API
+- View stream URLs and general NTS Radio information
+- Option to disable colored output
+
+## Requirements
+
+- Python 3.8 or higher
+
 ## Installation
 
 From PyPI:
@@ -97,16 +111,6 @@ nts-radio stream-url 1 | xargs mpv
 nts-radio stream-url 2 | xargs vlc
 ```
 
-## Features
-
-- Display currently playing shows on both NTS channels
-- Show upcoming broadcasts
-- View full schedule for both channels
-- Optional ASCII art display of show artwork with customizable dimensions
-- Access raw JSON data from the NTS API
-- View stream URLs and general NTS Radio information
-- Option to disable colored output
-
 ### Disable Colors
 
 You can disable colored output using the `--no-color` option:
@@ -114,10 +118,6 @@ You can disable colored output using the `--no-color` option:
 ```bash
 nts-radio --no-color json
 ```
-
-## Requirements
-
-- Python 3.8 or higher
 
 ## Testing
 
