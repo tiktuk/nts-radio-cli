@@ -134,4 +134,6 @@ uv run pytest
 ## Related projects
 
 - [brianmichel/Marconio: A simple NTS.live macOS application](https://github.com/brianmichel/Marconio)
+- [everdrone/nts: NTS Radio downloader and metadata parser](https://github.com/everdrone/nts)
+- [tiktuk/raycast-nts: Show what's playing on NTS Radio in Raycast](https://github.com/tiktuk/raycast-nts)
 - [tiktuk/NTS-Now-Playing-Example: Example of using the NTS api to display now playing info](https://github.com/tiktuk/NTS-Now-Playing-Example)
