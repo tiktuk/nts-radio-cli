@@ -54,7 +54,7 @@ def get_nts_data():
     except (
         requests.exceptions.ConnectionError,
         requests.exceptions.RequestException,
-    ) as e:
+    ):
         return None, "Network error: Could not connect to the NTS API"
     # Let other exceptions propagate normally
 
