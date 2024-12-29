@@ -8,7 +8,7 @@
 - [x] Fix truncation of genres and long descifiptions
 - [x] Run formatter
 - [x] Figure out minimum required python version
-- [ ] Don't print traceback when showing network error message
+- [x] Don't print traceback when showing network error message
 - [ ] Add screenshots to README
 
 ## Smaller improvements
