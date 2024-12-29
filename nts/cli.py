@@ -400,9 +400,15 @@ cli.add_command(stream_url)
 @click.option("--url", is_flag=True, help="Show stream URLs for all mixtapes")
 @click.option("--info", help="Show detailed information for a specific mixtape")
 @click.option("--random", is_flag=True, help="Play random mixtapes continuously")
+@click.option("--player", help="Path to media player executable (default: mpv)")
 @click.pass_context
-def infinite(ctx, play, url, info, random):
-    """List NTS infinite mixtapes"""
+def infinite(ctx, play, url, info, random, player):
+    """List NTS infinite mixtapes and play them with a specified media player.
+
+    The --player option allows using alternative media players (default: mpv):
+    - For playing a specific mixtape: nts infinite --play poolside --player vlc
+    - For random continuous play: nts infinite --random --player vlc
+    """
     console = Console(no_color=ctx.obj["no_color"])
 
     with console.status("[bold blue]Fetching mixtapes data..."):
@@ -418,7 +424,10 @@ def infinite(ctx, play, url, info, random):
         while True:
             mixtape = rand.choice(data["results"])
             console.print(f"[bold blue]Playing:[/] {mixtape['title']}")
-            if not play_stream(mixtape["audio_stream_endpoint"], console=console):
+            player_cmd = player if player else "mpv"
+            if not play_stream(
+                mixtape["audio_stream_endpoint"], player_cmd, console=console
+            ):
                 sys.exit(0)  # Exit on KeyboardInterrupt
 
     if info:
@@ -460,7 +469,10 @@ def infinite(ctx, play, url, info, random):
                 mixtape["mixtape_alias"].lower() == play.lower()
                 or mixtape["title"].lower() == play.lower()
             ):
-                play_stream(mixtape["audio_stream_endpoint"], console=console)
+                player_cmd = player if player else "mpv"
+                play_stream(
+                    mixtape["audio_stream_endpoint"], player_cmd, console=console
+                )
                 return
         console.print(f"[bold red]Error:[/] Mixtape '{play}' not found")
         return

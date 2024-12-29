@@ -154,7 +154,24 @@ The infinite command lets you interact with NTS's infinite mixtapes - curated, e
 Available options:
 - No options: Lists all available mixtapes with their descriptions
 - `--url`: Shows a simplified table with titles, aliases, and stream URLs
-- `--play <name>`: Plays the specified mixtape using mpv (must have mpv installed)
+- `--play <name>`: Plays the specified mixtape
+- `--player <path>`: Use an alternative media player (default: mpv)
+- `--random`: Play random mixtapes continuously
+
+Examples:
+```bash
+# Play a specific mixtape with default player (mpv)
+nts-radio infinite --play poolside
+
+# Play a specific mixtape with VLC
+nts-radio infinite --play poolside --player vlc
+
+# Play random mixtapes with default player (mpv)
+nts-radio infinite --random
+
+# Play random mixtapes with VLC
+nts-radio infinite --random --player vlc
+```
 
 ### Disable Colors
 
