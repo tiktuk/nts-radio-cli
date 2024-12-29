@@ -20,9 +20,9 @@
 
 - [x] Json output
 - [x] Links to streams
-- [ ] Make it possible to log in and get current songs, favourites etc.
-- [ ] Play command that starts playing the current show
+- [x] Play command that starts playing the current show
   - [ ] Specify default player in config file
+- [ ] Make it possible to log in and get current songs, favourites etc.
 - [ ] Render map of [Radio Broadcast Locations](https://www.nts.live/explore/location)
 - [ ] Currently playing channels on map using [mapscii](https://github.com/rastapasta/mapscii)
 - [ ] Make interactions with the NTS api available as a library for other applications to use
