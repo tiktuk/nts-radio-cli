@@ -10,12 +10,15 @@
 - [x] Figure out minimum required python version
 - [ ] Add screenshots to README
 
-## Ideas and possible improvements
+## Smaller improvements
+
+- [x] Make it possible to turn off colours
+- [ ] Make the lists of upcoming shows align even when the descriptions have different numbers of lines
+
+## Ideas
 
 - [x] Json output
-- [x] Make it possible to turn off colours
 - [x] Links to streams
-- [ ] Make the lists of upcoming shows align even when the descriptions have different numbers of lines
 - [ ] Make it possible to log in and get current songs, favourites etc
 - [ ] Play command that starts playing the current show
   - [ ] Specify default player in config file
