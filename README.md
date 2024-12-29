@@ -134,6 +134,28 @@ nts-radio play 1 --player vlc
 nts-radio play 2 --player /path/to/media/player
 ```
 
+### List and Play Infinite Mixtapes
+
+```bash
+# List all available infinite mixtapes
+nts-radio infinite
+
+# Show stream URLs for all mixtapes
+nts-radio infinite --url
+
+# Play a specific mixtape (using mpv)
+nts-radio infinite --play poolside
+# or
+nts-radio infinite --play "Low Key"
+```
+
+The infinite command lets you interact with NTS's infinite mixtapes - curated, endless streams of themed music. Each mixtape has a unique alias (like 'poolside' or 'slow-focus') that can be used with the --play option. You can use either the mixtape's alias or its full title when playing.
+
+Available options:
+- No options: Lists all available mixtapes with their descriptions
+- `--url`: Shows the stream URLs for all mixtapes
+- `--play <name>`: Plays the specified mixtape using mpv (must have mpv installed)
+
 ### Disable Colors
 
 You can disable colored output using the `--no-color` option:

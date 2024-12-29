@@ -23,10 +23,10 @@
 - [x] Play command that starts playing the current show
   - [x] Make it possible to use alternative media player
   - [ ] Specify default player in config file
+- [x] Command to list streams of infinite mixtapes
 - [ ] Make it possible to log in and get current songs, favourites etc.
 - [ ] Render map of [Radio Broadcast Locations](https://www.nts.live/explore/location)
 - [ ] Currently playing channels on map using [mapscii](https://github.com/rastapasta/mapscii)
 - [ ] Make interactions with the NTS api available as a library for other applications to use
 - [ ] Take channel number as argument to `show` and `schedule` so as to make it possible to show only one channel
 - [ ] Live mode where the app keeps running and updating what's on
-- [ ] Command to list streams of infinite mixtapes

@@ -22,6 +22,17 @@ STREAM_URLS = {
     "2": "https://stream-relay-geo.ntslive.net/stream2",
 }
 
+def get_mixtapes_data():
+    """Fetch NTS infinite mixtapes data"""
+    try:
+        response = requests.get("https://www.nts.live/api/v2/mixtapes")
+        return response.json(), None
+    except (
+        requests.exceptions.ConnectionError,
+        requests.exceptions.RequestException,
+    ):
+        return None, "Network error: Could not connect to the NTS API"
+
 
 @click.group()
 @click.option("--no-color", is_flag=True, help="Disable colored output")
@@ -341,6 +352,76 @@ cli.add_command(schedule)
 cli.add_command(json)
 cli.add_command(info)
 cli.add_command(stream_url)
+@click.command()
+@click.option("--play", help="Play the specified mixtape by name (e.g. 'poolside')")
+@click.option("--url", is_flag=True, help="Show stream URLs for all mixtapes")
+@click.pass_context
+def infinite(ctx, play, url):
+    """List NTS infinite mixtapes"""
+    console = Console(no_color=ctx.obj["no_color"])
+
+    with console.status("[bold blue]Fetching mixtapes data..."):
+        data, error = get_mixtapes_data()
+        if error:
+            console.print(f"[bold red]Error:[/] {error}")
+            return
+        if not data:
+            console.print("[bold red]Error:[/] No data received from API")
+            return
+
+    if url:
+        # Display URLs for all mixtapes
+        if "results" not in data:
+            console.print("[bold red]Error:[/] Invalid data format received from API")
+            return
+        for mixtape in data["results"]:
+            console.print(f"{mixtape['title']}: {mixtape['audio_stream_endpoint']}")
+        return
+
+    if play:
+        # Find and play the specified mixtape
+        if "results" not in data:
+            console.print("[bold red]Error:[/] Invalid data format received from API")
+            return
+        for mixtape in data["results"]:
+            if mixtape["mixtape_alias"].lower() == play.lower() or mixtape["title"].lower() == play.lower():
+                import subprocess
+                import sys
+                try:
+                    subprocess.run(
+                        ["mpv", mixtape["audio_stream_endpoint"]],
+                        check=True,
+                    )
+                    return
+                except FileNotFoundError:
+                    console.print("[bold red]Error:[/] mpv not found. Please ensure mpv is installed.")
+                    sys.exit(1)
+                except subprocess.CalledProcessError as e:
+                    console.print(f"[bold red]Error playing stream:[/] {e}")
+                    sys.exit(1)
+        console.print(f"[bold red]Error:[/] Mixtape '{play}' not found")
+        return
+
+    # Create table with mixtape information
+    table = Table(title="NTS Infinite Mixtapes", box=box.ROUNDED)
+    table.add_column("Title", style="bold blue")
+    table.add_column("Description")
+    table.add_column("Alias", style="yellow")
+
+    if "results" not in data:
+        console.print("[bold red]Error:[/] Invalid data format received from API")
+        return
+
+    for mixtape in data["results"]:
+        table.add_row(
+            mixtape["title"],
+            Text(mixtape["description"], style="white", overflow="fold"),
+            mixtape["mixtape_alias"]
+        )
+
+    console.print(table)
+
+cli.add_command(infinite)
 cli.add_command(play)
 
 if __name__ == "__main__":
