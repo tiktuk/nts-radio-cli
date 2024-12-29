@@ -4,6 +4,23 @@ import io
 import click
 import requests
 import html
+import subprocess
+import sys
+import random as rand
+from datetime import datetime
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.text import Text
+from rich.layout import Layout
+from rich import box
+from rich.rule import Rule
+from rich_pixels import Pixels
+from PIL import Image
+from rich.console import Group
+
+LIVE_INDICATOR = "🔴"
+
 from datetime import datetime
 from rich.console import Console
 from rich.table import Table
@@ -323,20 +340,20 @@ def stream_url(ctx, channel):
     print(STREAM_URLS[channel])
 
 
-def play_stream(url: str, player_cmd: str = "mpv", console: Console | None = None) -> bool:
+def play_stream(
+    url: str, player_cmd: str = "mpv", console: Console | None = None
+) -> bool:
     """Play a media stream using the specified player.
-    
+
     Args:
         url: The stream URL to play
         player_cmd: The media player command to use (default: mpv)
         console: Optional Console instance for rich output
-        
+
     Returns:
         bool: True if playback was successful, False if there was an error
     """
-    import subprocess
-    import sys
-    
+
     try:
         subprocess.run(
             [player_cmd, url],
@@ -366,7 +383,6 @@ def play_stream(url: str, player_cmd: str = "mpv", console: Console | None = Non
 @click.option("--player", help="Path to media player executable (default: mpv)")
 @click.pass_context
 def play(ctx, channel, player):
-    """Play the NTS radio stream for the specified channel (1 or 2)"""
     stream_url = STREAM_URLS[channel]
     player_cmd = player if player else "mpv"
     play_stream(stream_url, player_cmd)
@@ -387,10 +403,6 @@ cli.add_command(stream_url)
 @click.pass_context
 def infinite(ctx, play, url, info, random):
     """List NTS infinite mixtapes"""
-    import random as rand
-    import subprocess
-    import sys
-    
     console = Console(no_color=ctx.obj["no_color"])
 
     with console.status("[bold blue]Fetching mixtapes data..."):
@@ -448,9 +460,6 @@ def infinite(ctx, play, url, info, random):
                 mixtape["mixtape_alias"].lower() == play.lower()
                 or mixtape["title"].lower() == play.lower()
             ):
-                import subprocess
-                import sys
-
                 play_stream(mixtape["audio_stream_endpoint"], console=console)
                 return
         console.print(f"[bold red]Error:[/] Mixtape '{play}' not found")
