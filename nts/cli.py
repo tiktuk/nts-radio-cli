@@ -22,6 +22,7 @@ STREAM_URLS = {
     "2": "https://stream-relay-geo.ntslive.net/stream2",
 }
 
+
 def get_mixtapes_data():
     """Fetch NTS infinite mixtapes data"""
     try:
@@ -333,14 +334,17 @@ def play(ctx, channel, player):
 
     stream_url = STREAM_URLS[channel]
     player_cmd = player if player else "mpv"
-    
+
     try:
         subprocess.run(
             [player_cmd, stream_url],
             check=True,
         )
     except FileNotFoundError:
-        print(f"Error: {player_cmd} not found. Please ensure the media player is installed.", file=sys.stderr)
+        print(
+            f"Error: {player_cmd} not found. Please ensure the media player is installed.",
+            file=sys.stderr,
+        )
         sys.exit(1)
     except subprocess.CalledProcessError as e:
         print(f"Error playing stream: {e}", file=sys.stderr)
@@ -352,13 +356,20 @@ cli.add_command(schedule)
 cli.add_command(json)
 cli.add_command(info)
 cli.add_command(stream_url)
+
+
 @click.command()
 @click.option("--play", help="Play the specified mixtape by name (e.g. 'poolside')")
 @click.option("--url", is_flag=True, help="Show stream URLs for all mixtapes")
 @click.option("--info", help="Show detailed information for a specific mixtape")
+@click.option("--random", is_flag=True, help="Play random mixtapes continuously")
 @click.pass_context
-def infinite(ctx, play, url, info):
+def infinite(ctx, play, url, info, random):
     """List NTS infinite mixtapes"""
+    import random as rand
+    import subprocess
+    import sys
+    
     console = Console(no_color=ctx.obj["no_color"])
 
     with console.status("[bold blue]Fetching mixtapes data..."):
@@ -370,16 +381,37 @@ def infinite(ctx, play, url, info):
             console.print("[bold red]Error:[/] No data received from API")
             return
 
+    if random:
+        while True:
+            try:
+                mixtape = rand.choice(data["results"])
+                console.print(f"[bold blue]Playing:[/] {mixtape['title']}")
+                subprocess.run(
+                    ["mpv", mixtape["audio_stream_endpoint"]],
+                    check=True,
+                )
+            except FileNotFoundError:
+                console.print("[bold red]Error:[/] mpv not found. Please ensure mpv is installed.")
+                sys.exit(1)
+            except subprocess.CalledProcessError:
+                # If the stream ends or errors, we'll just continue to the next random mixtape
+                continue
+            except KeyboardInterrupt:
+                sys.exit(0)
+
     if info:
         # Find and show info for the specified mixtape
         for mixtape in data["results"]:
-            if mixtape["mixtape_alias"].lower() == info.lower() or mixtape["title"].lower() == info.lower():
+            if (
+                mixtape["mixtape_alias"].lower() == info.lower()
+                or mixtape["title"].lower() == info.lower()
+            ):
                 # Create info panel
                 info_text = Text()
                 info_text.append(f"{mixtape['title']}\n", style="bold blue")
                 info_text.append(f"{mixtape['subtitle']}\n\n", style="yellow")
                 info_text.append(f"{mixtape['description']}\n\n")
-                
+
                 if mixtape["credits"]:
                     info_text.append("Featured Shows:\n", style="bold green")
                     for credit in mixtape["credits"]:
@@ -402,9 +434,13 @@ def infinite(ctx, play, url, info):
             console.print("[bold red]Error:[/] Invalid data format received from API")
             return
         for mixtape in data["results"]:
-            if mixtape["mixtape_alias"].lower() == play.lower() or mixtape["title"].lower() == play.lower():
+            if (
+                mixtape["mixtape_alias"].lower() == play.lower()
+                or mixtape["title"].lower() == play.lower()
+            ):
                 import subprocess
                 import sys
+
                 try:
                     subprocess.run(
                         ["mpv", mixtape["audio_stream_endpoint"]],
@@ -412,7 +448,9 @@ def infinite(ctx, play, url, info):
                     )
                     return
                 except FileNotFoundError:
-                    console.print("[bold red]Error:[/] mpv not found. Please ensure mpv is installed.")
+                    console.print(
+                        "[bold red]Error:[/] mpv not found. Please ensure mpv is installed."
+                    )
                     sys.exit(1)
                 except subprocess.CalledProcessError as e:
                     console.print(f"[bold red]Error playing stream:[/] {e}")
@@ -422,7 +460,7 @@ def infinite(ctx, play, url, info):
 
     # Create table with mixtape information
     table = Table(title="NTS Infinite Mixtapes", box=box.ROUNDED)
-    
+
     if url:
         # Simplified table with URLs
         table.add_column("Title", style="bold blue")
@@ -443,16 +481,17 @@ def infinite(ctx, play, url, info):
             table.add_row(
                 mixtape["title"],
                 mixtape["mixtape_alias"],
-                mixtape["audio_stream_endpoint"]
+                mixtape["audio_stream_endpoint"],
             )
         else:
             table.add_row(
                 mixtape["title"],
                 Text(mixtape["description"], style="white", overflow="fold"),
-                mixtape["mixtape_alias"]
+                mixtape["mixtape_alias"],
             )
 
     console.print(table)
+
 
 cli.add_command(infinite)
 cli.add_command(play)

@@ -24,6 +24,7 @@
   - [x] Make it possible to use alternative media player
   - [ ] Specify default player in config file
 - [x] Command to list streams of infinite mixtapes
+- [x] Make an `infinite random` command that plays a random infinite mixtape
 - [ ] Make it possible to log in and get current songs, favourites etc.
 - [ ] Render map of [Radio Broadcast Locations](https://www.nts.live/explore/location)
 - [ ] Currently playing channels on map using [mapscii](https://github.com/rastapasta/mapscii)
