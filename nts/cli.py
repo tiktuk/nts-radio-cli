@@ -50,13 +50,13 @@ def get_nts_data():
     """Fetch current NTS broadcast data"""
     try:
         response = requests.get("https://www.nts.live/api/v2/live")
-        return response.json()
-    except requests.exceptions.ConnectionError:
-        raise Exception(
-            "Unable to connect to NTS. Please check your internet connection and try again."
-        )
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"Error connecting to NTS: {str(e)}")
+        return response.json(), None
+    except (
+        requests.exceptions.ConnectionError,
+        requests.exceptions.RequestException,
+    ) as e:
+        return None, "Network error: Could not connect to the NTS API"
+    # Let other exceptions propagate normally
 
 
 def format_show_title(title):
@@ -68,7 +68,15 @@ def format_show_title(title):
 def fetch_nts_data_with_status(console):
     """Fetch NTS data with status indicator"""
     with console.status("[bold blue]Fetching NTS data..."):
-        return get_nts_data()
+        try:
+            data, error = get_nts_data()
+            if error:
+                console.print(f"[bold red]Error:[/] {error}")
+                return None
+            return data
+        except Exception:
+            # Let non-network errors propagate with traceback
+            raise
 
 
 def handle_command_error(console, e):
@@ -179,6 +187,8 @@ def now(ctx, art, art_width, art_height):
     console = Console(no_color=ctx.obj["no_color"])
 
     data = fetch_nts_data_with_status(console)
+    if not data:
+        return
 
     # Create main layout with two channels side by side
     layout = Layout()
@@ -213,31 +223,29 @@ def schedule(ctx):
     """Display full schedule for both channels"""
     console = Console(no_color=ctx.obj["no_color"])
 
-    try:
-        data = fetch_nts_data_with_status(console)
+    data = fetch_nts_data_with_status(console)
+    if not data:
+        return
 
-        for idx, channel in enumerate(data["results"]):
-            table = Table(title=f"Channel {idx + 1} Schedule", box=box.ROUNDED)
-            table.add_column("Time", style="yellow")
-            table.add_column("Show", style="white")
+    for idx, channel in enumerate(data["results"]):
+        table = Table(title=f"Channel {idx + 1} Schedule", box=box.ROUNDED)
+        table.add_column("Time", style="yellow")
+        table.add_column("Show", style="white")
 
-            # Add current show
-            current = channel["now"]
-            title = format_show_title(current["broadcast_title"])
-            table.add_row(format_time_range(current), Text(title, style="bold blue"))
+        # Add current show
+        current = channel["now"]
+        title = format_show_title(current["broadcast_title"])
+        table.add_row(format_time_range(current), Text(title, style="bold blue"))
 
-            # Add upcoming shows
-            for i in range(1, 18):  # NTS usually provides next 17 shows
-                next_show = channel.get(f"next{i}")
-                if next_show:
-                    title = format_show_title(next_show["broadcast_title"])
-                    table.add_row(format_time_range(next_show), title)
+        # Add upcoming shows
+        for i in range(1, 18):  # NTS usually provides next 17 shows
+            next_show = channel.get(f"next{i}")
+            if next_show:
+                title = format_show_title(next_show["broadcast_title"])
+                table.add_row(format_time_range(next_show), title)
 
-            console.print(table)
-            console.print()  # Add spacing between channels
-
-    except Exception as e:
-        handle_command_error(console, e)
+        console.print(table)
+        console.print()  # Add spacing between channels
 
 
 @click.command()
@@ -245,11 +253,9 @@ def schedule(ctx):
 def json(ctx):
     """Output raw JSON data from NTS API"""
     console = Console(no_color=ctx.obj["no_color"])
-    try:
-        data = fetch_nts_data_with_status(console)
+    data = fetch_nts_data_with_status(console)
+    if data:
         console.print_json(data=data)
-    except Exception as e:
-        handle_command_error(console, e)
 
 
 @click.command()
@@ -305,6 +311,8 @@ def stream_url(ctx, channel):
     print(STREAM_URLS[channel])
 
 
+cli.add_command(now)
+cli.add_command(schedule)
 cli.add_command(now)
 cli.add_command(schedule)
 cli.add_command(json)
