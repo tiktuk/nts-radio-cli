@@ -313,21 +313,23 @@ def stream_url(ctx, channel):
 
 @click.command()
 @click.argument("channel", type=click.Choice(["1", "2"]))
+@click.option("--player", help="Path to media player executable (default: mpv)")
 @click.pass_context
-def play(ctx, channel):
+def play(ctx, channel, player):
     """Play the NTS radio stream for the specified channel (1 or 2)"""
     import subprocess
     import sys
 
     stream_url = STREAM_URLS[channel]
+    player_cmd = player if player else "mpv"
     
     try:
         subprocess.run(
-            ["mpv", stream_url],
+            [player_cmd, stream_url],
             check=True,
         )
     except FileNotFoundError:
-        print("Error: mpv player not found. Please install mpv first.", file=sys.stderr)
+        print(f"Error: {player_cmd} not found. Please ensure the media player is installed.", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError as e:
         print(f"Error playing stream: {e}", file=sys.stderr)
