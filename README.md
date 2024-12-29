@@ -140,7 +140,7 @@ nts-radio play 2 --player /path/to/media/player
 # List all available infinite mixtapes
 nts-radio infinite
 
-# Show stream URLs for all mixtapes
+# List mixtapes with their stream URLs (simplified view)
 nts-radio infinite --url
 
 # Play a specific mixtape (using mpv)
@@ -153,7 +153,7 @@ The infinite command lets you interact with NTS's infinite mixtapes - curated, e
 
 Available options:
 - No options: Lists all available mixtapes with their descriptions
-- `--url`: Shows the stream URLs for all mixtapes
+- `--url`: Shows a simplified table with titles, aliases, and stream URLs
 - `--play <name>`: Plays the specified mixtape using mpv (must have mpv installed)
 
 ### Disable Colors

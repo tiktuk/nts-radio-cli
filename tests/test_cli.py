@@ -176,10 +176,14 @@ def test_infinite_command(mocker):
     assert "Test Description" in result.output
     assert "test-mixtape" in result.output
 
-    # Test URL display
+    # Test URL display in simplified table
     result = runner.invoke(infinite, ["--url"], obj={"no_color": False})
     assert result.exit_code == 0
+    assert "Test Mixtape" in result.output
+    assert "Test Description" not in result.output  # Description should be omitted
+    assert "test-mixtape" in result.output
     assert "https://test-stream-url" in result.output
+    assert "Stream URL" in result.output  # Check for column header
 
     # Test play functionality (mock subprocess.run)
     mock_run = mocker.patch("subprocess.run")

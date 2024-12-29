@@ -369,15 +369,6 @@ def infinite(ctx, play, url):
             console.print("[bold red]Error:[/] No data received from API")
             return
 
-    if url:
-        # Display URLs for all mixtapes
-        if "results" not in data:
-            console.print("[bold red]Error:[/] Invalid data format received from API")
-            return
-        for mixtape in data["results"]:
-            console.print(f"{mixtape['title']}: {mixtape['audio_stream_endpoint']}")
-        return
-
     if play:
         # Find and play the specified mixtape
         if "results" not in data:
@@ -404,20 +395,35 @@ def infinite(ctx, play, url):
 
     # Create table with mixtape information
     table = Table(title="NTS Infinite Mixtapes", box=box.ROUNDED)
-    table.add_column("Title", style="bold blue")
-    table.add_column("Description")
-    table.add_column("Alias", style="yellow")
+    
+    if url:
+        # Simplified table with URLs
+        table.add_column("Title", style="bold blue")
+        table.add_column("Alias", style="yellow")
+        table.add_column("Stream URL", style="green")
+    else:
+        # Full table with descriptions
+        table.add_column("Title", style="bold blue")
+        table.add_column("Description")
+        table.add_column("Alias", style="yellow")
 
     if "results" not in data:
         console.print("[bold red]Error:[/] Invalid data format received from API")
         return
 
     for mixtape in data["results"]:
-        table.add_row(
-            mixtape["title"],
-            Text(mixtape["description"], style="white", overflow="fold"),
-            mixtape["mixtape_alias"]
-        )
+        if url:
+            table.add_row(
+                mixtape["title"],
+                mixtape["mixtape_alias"],
+                mixtape["audio_stream_endpoint"]
+            )
+        else:
+            table.add_row(
+                mixtape["title"],
+                Text(mixtape["description"], style="white", overflow="fold"),
+                mixtape["mixtape_alias"]
+            )
 
     console.print(table)
 
