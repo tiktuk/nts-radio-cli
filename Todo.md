@@ -21,6 +21,7 @@
 - [x] Json output
 - [x] Links to streams
 - [x] Play command that starts playing the current show
+  - [x] Make it possible to use alternative media player
   - [ ] Specify default player in config file
 - [ ] Make it possible to log in and get current songs, favourites etc.
 - [ ] Render map of [Radio Broadcast Locations](https://www.nts.live/explore/location)

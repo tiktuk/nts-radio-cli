@@ -114,18 +114,24 @@ nts-radio stream-url 2 | xargs vlc
 ### Play Stream Directly
 
 ```bash
-nts-radio play <channel>
+nts-radio play <channel> [--player <path>]
 ```
 
-Play the NTS radio stream for a specific channel (1 or 2) using mpv. Requires mpv to be installed on your system.
+Play the NTS radio stream for a specific channel (1 or 2). Uses mpv by default, but you can specify a different media player using the --player option.
 
 Examples:
 ```bash
-# Play channel 1
+# Play channel 1 with default player (mpv)
 nts-radio play 1
 
-# Play channel 2
+# Play channel 2 with default player (mpv)
 nts-radio play 2
+
+# Play channel 1 with VLC
+nts-radio play 1 --player vlc
+
+# Play channel 2 with a custom media player
+nts-radio play 2 --player /path/to/media/player
 ```
 
 ### Disable Colors
