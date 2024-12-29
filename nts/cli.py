@@ -355,8 +355,9 @@ cli.add_command(stream_url)
 @click.command()
 @click.option("--play", help="Play the specified mixtape by name (e.g. 'poolside')")
 @click.option("--url", is_flag=True, help="Show stream URLs for all mixtapes")
+@click.option("--info", help="Show detailed information for a specific mixtape")
 @click.pass_context
-def infinite(ctx, play, url):
+def infinite(ctx, play, url, info):
     """List NTS infinite mixtapes"""
     console = Console(no_color=ctx.obj["no_color"])
 
@@ -368,6 +369,32 @@ def infinite(ctx, play, url):
         if not data:
             console.print("[bold red]Error:[/] No data received from API")
             return
+
+    if info:
+        # Find and show info for the specified mixtape
+        for mixtape in data["results"]:
+            if mixtape["mixtape_alias"].lower() == info.lower() or mixtape["title"].lower() == info.lower():
+                # Create info panel
+                info_text = Text()
+                info_text.append(f"{mixtape['title']}\n", style="bold blue")
+                info_text.append(f"{mixtape['subtitle']}\n\n", style="yellow")
+                info_text.append(f"{mixtape['description']}\n\n")
+                
+                if mixtape["credits"]:
+                    info_text.append("Featured Shows:\n", style="bold green")
+                    for credit in mixtape["credits"]:
+                        info_text.append(f"• {credit['name']}\n")
+
+                panel = Panel(
+                    info_text,
+                    title=f"MIXTAPE: {mixtape['title'].upper()}",
+                    border_style="blue",
+                    box=box.ROUNDED,
+                )
+                console.print(panel)
+                return
+        console.print(f"[bold red]Error:[/] Mixtape '{info}' not found")
+        return
 
     if play:
         # Find and play the specified mixtape
