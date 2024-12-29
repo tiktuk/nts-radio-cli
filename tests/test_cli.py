@@ -161,7 +161,7 @@ def test_infinite_command(mocker):
                 "title": "Test Mixtape",
                 "description": "Test Description",
                 "mixtape_alias": "test-mixtape",
-                "audio_stream_endpoint": "https://test-stream-url"
+                "audio_stream_endpoint": "https://test-stream-url",
             }
         ]
     }
@@ -187,12 +187,11 @@ def test_infinite_command(mocker):
 
     # Test play functionality (mock subprocess.run)
     mock_run = mocker.patch("subprocess.run")
-    result = runner.invoke(infinite, ["--play", "test-mixtape"], obj={"no_color": False})
-    assert result.exit_code == 0
-    mock_run.assert_called_once_with(
-        ["mpv", "https://test-stream-url"],
-        check=True
+    result = runner.invoke(
+        infinite, ["--play", "test-mixtape"], obj={"no_color": False}
     )
+    assert result.exit_code == 0
+    mock_run.assert_called_once_with(["mpv", "https://test-stream-url"], check=True)
 
 
 def test_infinite_command_errors(mocker):
