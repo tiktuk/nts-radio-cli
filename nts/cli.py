@@ -311,13 +311,35 @@ def stream_url(ctx, channel):
     print(STREAM_URLS[channel])
 
 
-cli.add_command(now)
-cli.add_command(schedule)
+@click.command()
+@click.argument("channel", type=click.Choice(["1", "2"]))
+@click.pass_context
+def play(ctx, channel):
+    """Play the NTS radio stream for the specified channel (1 or 2)"""
+    import subprocess
+    import sys
+
+    stream_url = STREAM_URLS[channel]
+    
+    try:
+        subprocess.run(
+            ["mpv", stream_url],
+            check=True,
+        )
+    except FileNotFoundError:
+        print("Error: mpv player not found. Please install mpv first.", file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        print(f"Error playing stream: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
 cli.add_command(now)
 cli.add_command(schedule)
 cli.add_command(json)
 cli.add_command(info)
 cli.add_command(stream_url)
+cli.add_command(play)
 
 if __name__ == "__main__":
     cli()
