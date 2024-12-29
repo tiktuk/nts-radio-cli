@@ -323,32 +323,53 @@ def stream_url(ctx, channel):
     print(STREAM_URLS[channel])
 
 
+def play_stream(url: str, player_cmd: str = "mpv", console: Console | None = None) -> bool:
+    """Play a media stream using the specified player.
+    
+    Args:
+        url: The stream URL to play
+        player_cmd: The media player command to use (default: mpv)
+        console: Optional Console instance for rich output
+        
+    Returns:
+        bool: True if playback was successful, False if there was an error
+    """
+    import subprocess
+    import sys
+    
+    try:
+        subprocess.run(
+            [player_cmd, url],
+            check=True,
+        )
+        return True
+    except FileNotFoundError:
+        error_msg = f"Error: {player_cmd} not found. Please ensure the media player is installed."
+        if console:
+            console.print(f"[bold red]{error_msg}[/]")
+        else:
+            print(error_msg, file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        error_msg = f"Error playing stream: {e}"
+        if console:
+            console.print(f"[bold red]{error_msg}[/]")
+        else:
+            print(error_msg, file=sys.stderr)
+        sys.exit(1)
+    except KeyboardInterrupt:
+        return False
+
+
 @click.command()
 @click.argument("channel", type=click.Choice(["1", "2"]))
 @click.option("--player", help="Path to media player executable (default: mpv)")
 @click.pass_context
 def play(ctx, channel, player):
     """Play the NTS radio stream for the specified channel (1 or 2)"""
-    import subprocess
-    import sys
-
     stream_url = STREAM_URLS[channel]
     player_cmd = player if player else "mpv"
-
-    try:
-        subprocess.run(
-            [player_cmd, stream_url],
-            check=True,
-        )
-    except FileNotFoundError:
-        print(
-            f"Error: {player_cmd} not found. Please ensure the media player is installed.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-    except subprocess.CalledProcessError as e:
-        print(f"Error playing stream: {e}", file=sys.stderr)
-        sys.exit(1)
+    play_stream(stream_url, player_cmd)
 
 
 cli.add_command(now)
@@ -383,21 +404,10 @@ def infinite(ctx, play, url, info, random):
 
     if random:
         while True:
-            try:
-                mixtape = rand.choice(data["results"])
-                console.print(f"[bold blue]Playing:[/] {mixtape['title']}")
-                subprocess.run(
-                    ["mpv", mixtape["audio_stream_endpoint"]],
-                    check=True,
-                )
-            except FileNotFoundError:
-                console.print("[bold red]Error:[/] mpv not found. Please ensure mpv is installed.")
-                sys.exit(1)
-            except subprocess.CalledProcessError:
-                # If the stream ends or errors, we'll just continue to the next random mixtape
-                continue
-            except KeyboardInterrupt:
-                sys.exit(0)
+            mixtape = rand.choice(data["results"])
+            console.print(f"[bold blue]Playing:[/] {mixtape['title']}")
+            if not play_stream(mixtape["audio_stream_endpoint"], console=console):
+                sys.exit(0)  # Exit on KeyboardInterrupt
 
     if info:
         # Find and show info for the specified mixtape
@@ -441,20 +451,8 @@ def infinite(ctx, play, url, info, random):
                 import subprocess
                 import sys
 
-                try:
-                    subprocess.run(
-                        ["mpv", mixtape["audio_stream_endpoint"]],
-                        check=True,
-                    )
-                    return
-                except FileNotFoundError:
-                    console.print(
-                        "[bold red]Error:[/] mpv not found. Please ensure mpv is installed."
-                    )
-                    sys.exit(1)
-                except subprocess.CalledProcessError as e:
-                    console.print(f"[bold red]Error playing stream:[/] {e}")
-                    sys.exit(1)
+                play_stream(mixtape["audio_stream_endpoint"], console=console)
+                return
         console.print(f"[bold red]Error:[/] Mixtape '{play}' not found")
         return
 
